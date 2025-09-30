@@ -3,13 +3,13 @@ import json
 import asyncio
 from dotenv import load_dotenv
 from typing import Any, Optional, Union, List
-import google.generativeai as genai, types
+import google.generativeai as genai
 from neo4j_graphrag.embeddings import Embedder
 from neo4j_graphrag.llm.base import LLMInterface
 from neo4j_graphrag.llm.types import LLMResponse
 from neo4j_graphrag.types import LLMMessage
 from neo4j_graphrag.message_history import MessageHistory
-
+from google.genai import types
 
 class GeminiLLM(LLMInterface):
     """Custom Gemini LLM implementation using google-generativeai package"""
