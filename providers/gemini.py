@@ -136,7 +136,7 @@ class GeminiEmbeddings(Embedder):
             model=self.model,
             content=text,
             task_type="retrieval_query",
-            config=types.EmbedContentConfig(output_dimensionality=768)
+            output_dimensionality=768
 
         )
         return result['embedding']

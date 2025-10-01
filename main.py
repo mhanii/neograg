@@ -33,29 +33,191 @@ def setup_graph_components():
     # Custom Gemini LLM for KG extraction
     ex_llm = GeminiLLM(model_name="gemini-2.5-flash", model_params={"temperature": 0})
     
-    # Custom Gemini embeddings (3072 dimensions)
+    # Custom Gemini embeddings (768 dimensions)
     embedder = GeminiEmbeddings()
     
     return driver, ex_llm, embedder
 
 
 def get_node_and_relation_types():
-    """Define entity and relationship types for extraction"""
-    basic_node_labels = ["Object", "Entity", "Group", "Person", "Organization", "Place"]
-    academic_node_labels = ["ArticleOrPaper", "PublicationOrJournal"]
-    medical_node_labels = ["Anatomy", "BiologicalProcess", "Cell", "CellularComponent", 
-                           "CellType", "Condition", "Disease", "Drug",
-                           "EffectOrPhenotype", "Exposure", "GeneOrProtein", "Molecule",
-                           "MolecularFunction", "Pathway"]
+    """
+    Comprehensive entity and relationship types for NASA bioscience knowledge extraction.
+    All values are unique and optimized for space biology research analysis.
+    """
     
-    node_labels = basic_node_labels + academic_node_labels + medical_node_labels
+    # Basic foundational entities
+    basic_nodes = [
+        "Object", "Entity", "Group", "Person", "Organization", 
+        "Place", "Event", "Product", "Work", "Location", 
+        "Concept", "Idea", "Phenomenon"
+    ]
     
-    rel_types = ["ACTIVATES", "AFFECTS", "ASSESSES", "ASSOCIATED_WITH", "AUTHORED",
-        "BIOMARKER_FOR", "CAUSES", "CITES", "CONTRIBUTES_TO", "DESCRIBES", "EXPRESSES",
-        "HAS_REACTION", "HAS_SYMPTOM", "INCLUDES", "INTERACTS_WITH", "PRESCRIBED",
-        "PRODUCES", "RECEIVED", "RESULTS_IN", "TREATS", "USED_FOR"]
+    # Academic/research entities
+    academic_nodes = [
+        "ArticleOrPaper", "PublicationOrJournal", "Author",
+        "ResearchTopic", "Methodology", "Theory", "Hypothesis", 
+        "Experiment", "Finding", "Conclusion","Dataset", "Protocol"
+    ]
     
-    return node_labels, rel_types
+    # Medical/biological entities
+    biological_nodes = [
+        "BiologicalProcess", "Cell", "CellularComponent", 
+        "Condition", "Disease", "Drug",
+        "EffectOrPhenotype", "Exposure", "GeneOrProtein", "Molecule",
+        "Organ", "PhysiologicalSystem"
+    ]
+    
+    # NASA/space-specific entities
+    space_nodes = [
+        "AstronomicalObject", "CelestialBody", "Planet", "Star", "Galaxy", 
+        "BlackHole", "SpaceMission", "Satellite", "Telescope", "Astronaut", 
+        "Spacecraft", "Orbit", "AstrophysicalPhenomenon",
+        "CosmicEvent", "Exoplanet", "Comet", "Asteroid", "Meteor", "SolarSystem",
+        "LaunchVehicle", "MissionPhase"
+    ]
+    
+    # Space biology specific (CRITICAL FOR NASA CHALLENGE)
+    space_biology_nodes = [
+        "Microgravity", "SpaceRadiation", "SpaceEnvironment", 
+        "LifeSupportSystem", "Countermeasure", "SpaceAdaptation", 
+        "PhysiologicalChange", "ISSExperiment", "Microbe",
+        "ModelOrganism", "HumanSubject", "PlantSpecies", 
+        "Spaceflight"
+    ]
+    
+    # Research management and gaps
+    research_meta_nodes = [
+        "KnowledgeGap", "ResearchOpportunity", "FutureDirection",
+        "Grant", "FundingAgency", "Limitation", "Challenge",
+        "Recommendation", "Consensus", "Controversy"
+    ]
+    
+    # Physics entities
+    physics_nodes = [
+        "Particle", "Force", "Field", "Wave", "QuantumState", 
+        "EnergyLevel", "PhysicalConstant", "ThermodynamicSystem", 
+        "RelativisticEffect", "OpticalPhenomenon", "NuclearReaction",
+        "RadiationType", "DoseLevel"
+    ]
+    
+    # Chemistry entities
+    chemistry_nodes = [
+        "Element", "Compound", "Reaction", "Catalyst", 
+        "Solvent", "FunctionalGroup", "Isotope", 
+        "AcidBase", "ChemicalProperty"
+    ]
+    
+    # Geology/planetary science entities
+    geology_nodes = [
+        "Mineral", "Rock", "Fossil", "GeologicalFormation", 
+        "TectonicPlate", "Volcano", "Earthquake",
+        "Sediment", "ErosionProcess", "StratigraphicLayer",
+        "PlanetarySurface", "Regolith"
+    ]
+    
+    # Environmental entities
+    environment_nodes = [
+        "Ecosystem", "Habitat", "Species", "Pollutant", 
+        "ClimateEvent", "ConservationEffort", "EnvironmentalCondition",
+        "AtmosphericCondition"
+    ]
+    
+    # Equipment and technology
+    technology_nodes = [
+        "Instrument", "Sensor", "Hardware", "Software",
+        "ImagingSystem", "AnalyticalTool", "Platform"
+    ]
+    
+    
+    # Combine all unique node types
+    all_nodes = list(set(
+        basic_nodes + 
+        academic_nodes + 
+        biological_nodes + 
+        space_nodes + 
+        space_biology_nodes +
+        research_meta_nodes +
+        physics_nodes + 
+        chemistry_nodes + 
+        geology_nodes + 
+        environment_nodes +
+        technology_nodes 
+    ))
+    
+    # Comprehensive relationship types
+    all_relationships = list(set([
+        # Research and authorship
+        "AUTHORED", "CITES", "PUBLISHED_IN",
+        "COLLABORATED_WITH", "SUPERVISED", "FUNDED_BY", "DOCUMENTED_IN",
+        
+        # Experimental relationships
+        "CONDUCTED_ON", "TESTED_ON", "MEASURED_BY", "OBSERVED_IN",
+        "PERFORMED_IN", "USED_FOR", "APPLIES", "IMPLEMENTS",
+        
+        # Causal and effect relationships
+        "CAUSES", "AFFECTS", "REGULATES", "ACTIVATES",
+        "INFLUENCES", "MODULATES", "INHIBITS",
+        "PRODUCES", "INDUCES",
+        
+        # Biological relationships
+        "INTERACTS_WITH", "BINDS_TO", "EXPRESSES", "ENCODES",
+
+        
+        # Medical/therapeutic relationships
+        "TREATS", "MITIGATES", "PREVENTS", "DIAGNOSES",
+        "PRESCRIBED", "BIOMARKER_FOR", "INDICATES",
+        
+        # Spatial and structural relationships
+        "LOCATED_IN", "PART_OF", "SURROUNDS",
+        
+        # Comparative relationships
+        "SIMILAR_TO", "RELATED_TO", "CONTRASTS_WITH", "DIFFERS_FROM",
+        "COMPARED_WITH", "CORRELATES_WITH", "ASSOCIATED_WITH",
+        
+        # Knowledge and reasoning
+        "SUPPORTED_BY", "CONTRADICTS_WITH", "VALIDATES", "CONFIRMS",
+        "PROPOSES", "HYPOTHESIZES", "SUGGESTS", "DEMONSTRATES",
+        "EXPLAINS", "DESCRIBES", "CHARACTERIZES",
+
+        
+        # Research process
+        "ASSESSES", "EVALUATES", "ANALYZES", 
+        "EXAMINES", "MONITORS","INVESTIGATES",
+        
+        # Findings and conclusions
+        "CONCLUDES", "FINDS", "DISCOVERS", "REVEALS",
+        "SHOWS", "REPORTS", "IDENTIFIES",
+        
+        # Gaps and opportunities
+        "IDENTIFIES_GAP", "HIGHLIGHTS_NEED", "RECOMMENDS",
+        "REQUIRES", "NECESSITATES","FUTURE_WORK",
+        
+        # Contribution and impact
+        "CONTRIBUTES_TO", "ADVANCES", 
+        "ENHANCES", "FACILITATES",
+        
+        # Inclusion and taxonomy
+        "CATEGORIZED_AS", "CLASSIFIED_AS",
+
+        
+        # Temporal relationships
+        "PRECEDES", "FOLLOWS", "OCCURS_DURING", "PRECEDED_BY",
+        
+        # Mission and application specific
+        "INFORMED_BY", "APPLICABLE_TO", "COMPATIBLE_WITH",
+        "DEPLOYED_ON", "INTEGRATED_WITH", 
+        
+        # Data and methodology
+        "DERIVED_FROM", "BASED_ON", "CALCULATED_FROM",
+        "EXTRACTED_FROM", "SOURCED_FROM"
+    ]))
+    
+    # Sort for consistency
+    all_nodes.sort()
+    all_relationships.sort()
+    
+    return all_nodes, all_relationships
+
 
 
 async def build_knowledge_graph(driver, ex_llm, embedder, pdf_paths):
@@ -85,13 +247,13 @@ async def build_knowledge_graph(driver, ex_llm, embedder, pdf_paths):
 
 
 def setup_vector_index(driver):
-    """Create vector index for embeddings (3072 dims for Gemini)"""
+    """Create vector index for embeddings (768 dims for Gemini)"""
     create_vector_index(
         driver, 
         name="text_embeddings", 
         label="Chunk",
         embedding_property="embedding", 
-        dimensions=3072,
+        dimensions=768,
         similarity_fn="cosine"
     )
 
@@ -149,7 +311,7 @@ def test_retrievers(vector_retriever, vc_retriever):
 
 def setup_rag_pipelines(vector_retriever, vc_retriever):
     """Create RAG instances for both retriever types"""
-    llm = GeminiLLM(model_name="gemini-1.5-pro", model_params={"temperature": 0.0})
+    llm = GeminiLLM(model_name="gemini-2.5-pro", model_params={"temperature": 0.0})
     
     rag_template = RagTemplate(
         template='''Answer the Question using the following Context. Only respond with information mentioned in the Context. Do not inject any speculative information not mentioned. 
@@ -225,7 +387,7 @@ async def main():
     driver, ex_llm, embedder = setup_graph_components()
     
     pdf_paths = [
-        'truncated-pdfs/pone.0104830.pdf', 
+        'truncated-pdfs/pnas.201209793.pdf', 
     ]
     
     print("\n=== BUILDING KNOWLEDGE GRAPH ===")
